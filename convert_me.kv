@@ -1,0 +1,128 @@
+
+MyLayout:
+    orientation: 'vertical'
+
+    MDToolbar:
+        title: 'Currency Converter'
+
+    MDBottomNavigation:
+
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'Convert Eur-Rsd'
+            icon: 'cash-multiple'
+
+            MDToolbar:
+                title: 'Convert from EUR to RSD'
+                pos_hint: {'center_x': 0.5, 'top': 0.9}
+                size_hint: (0.6, 0.05)
+                right_action_items: [['rotate-3d-variant', lambda x: root.flip()]]
+                id: toolbar
+
+            MDTextField:
+                hint_text: 'enter amount'
+                halign: 'center'
+                size_hint: (0.33, 0.1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.65}
+                font_size: 22
+                id: input
+
+            MDLabel:
+                halign: 'center'
+                pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+                theme_text_color: 'Secondary'
+                font_style: 'H4'
+                text: ''
+                id: upper_label
+
+            MDLabel:
+                halign: 'center'
+                pos_hint: {'center_x': 0.5, 'center_y': 0.35}
+                theme_text_color: 'Secondary'
+                text: ''
+                id: bottom_label
+
+            MDFillRoundFlatButton:
+                text: 'CONVERT'
+                font_size: 17
+                pos_hint: {'center_x': 0.5, 'center_y': 0.15}
+                on_press: root.convert()
+
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Buy Money'
+            icon: 'cash'
+
+
+            MDRectangleFlatButton:
+                text: 'From Currency'
+                id: drop_item_one
+                size: (.1,.1)
+                pos_hint: {'center_x': .3, 'center_y': .75}
+                on_release: root.open_menu_one()
+
+            MDTextField:
+                hint_text: 'Amount'
+                halign: 'center'
+                size_hint: (.1, .1)
+                pos_hint: {'center_x': .3, 'center_y': 0.6}
+                font_size: 22
+                id: amount_input
+
+            MDLabel:
+                halign: 'center'
+                pos_hint: {'center_x': 0.5, 'center_y': 0.3}
+                theme_text_color: 'Secondary'
+                font_style: 'H4'
+                text: ''
+                id: result
+
+
+            MDRectangleFlatButton:
+                text: 'To Currency'
+                id: drop_item_two
+                pos_hint: {'center_x': .7, 'center_y': .75}
+                on_release: root.open_menu_two()
+
+            MDFillRoundFlatButton:
+                text: 'CALCULATE'
+                font_size: 17
+                pos_hint: {'center_x': 0.3, 'center_y': 0.45}
+                on_press: root.buy_money()
+
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'List of Currencies'
+            icon: 'language-python'
+            on_tab_press: root.list_currencies()
+            recycleView: recycleView
+            CoverImage:
+                source: "files/cat.jpg"
+                canvas:
+                    Color:
+                        rgba: 0, 0, 0, .4
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+            BoxLayout:
+                orientation: "vertical"
+                padding: dp(12)
+                spacing: dp(5)
+                RV:
+                    id: recycleView
+
+
+<CoverImage@CoverBehavior+Image>:
+    reference_size: self.texture_size
+
+<RV>:
+    viewclass: 'Label'
+    RecycleBoxLayout:
+        spacing: dp(10)
+        default_size: None, dp(70)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
