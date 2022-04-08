@@ -1,3 +1,5 @@
+from requests import get
+
 from kivy.config import Config
 
 Config.set("graphics", "width", "630")
@@ -7,15 +9,34 @@ from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import NumericProperty, ObjectProperty
-from kivy.uix.behaviors import CoverBehavior
 from kivy.uix.recycleview import RecycleView
-from kivy.metrics import dp
 from kivymd.uix.menu import MDDropdownMenu
-
-from currencies import exchange_rate, get_currencies
 
 URL = "https://free.currconv.com/"
 API_KEY = 'bfc0324d084dd91c0e6f'
+
+
+def get_currencies():
+    endpoint = f"api/v7/currencies?apiKey={API_KEY}"
+    url = URL + endpoint
+    data = get(url).json()['results']
+
+    data = list(data.items())
+    data.sort()
+
+    return data
+
+
+def exchange_rate(currency_one, currency_two):
+    endpoint = f'api/v7/convert?q={currency_one}_{currency_two}&compact=ultra&apiKey={API_KEY}'
+    url = URL + endpoint
+    data = get(url).json()
+    if len(data) == 0:
+        output = 'Invalid currencies!'
+        print(output)
+
+    rate = list(data.values())[0]
+    return rate
 
 
 class RV(RecycleView):
@@ -39,41 +60,43 @@ class MyLayout(BoxLayout):
     menu = ObjectProperty()
 
     def open_menu_one(self):
-        menu_list = []
-        data = get_currencies()
-        for name, curr in data:
-            abbreviation = curr['currencyName']
-            ids = curr['id']
-            symbol = curr.get('currencySymbol', '')
-            menu_list.append(
-                {'viewclass': 'OneLineListItem',
-                 'text': f'{ids} - {abbreviation} - {symbol}',
-                 'on_press': lambda x=f'{ids} - {symbol}': self.option_callback(x)}
+        if not self.menu:
+            menu_list = []
+            data = get_currencies()
+            for name, curr in data:
+                abbreviation = curr['currencyName']
+                ids = curr['id']
+                symbol = curr.get('currencySymbol', '')
+                menu_list.append(
+                    {'viewclass': 'OneLineListItem',
+                     'text': f'{ids} - {abbreviation} - {symbol}',
+                     'on_press': lambda x=f'{ids} - {symbol}': self.option_callback(x)}
+                )
+            self.menu = MDDropdownMenu(
+                width_mult=4,
+                caller=self.ids.drop_item_one,
+                items=menu_list
             )
-        self.menu = MDDropdownMenu(
-            width_mult=4,
-            caller=self.ids.drop_item_one,
-            items=menu_list
-        )
         self.menu.open()
 
     def open_menu_two(self):
-        menu_list = []
-        data = get_currencies()
-        for _, curr in data:
-            abbreviation = curr['currencyName']
-            ids = curr['id']
-            symbol = curr.get('currencySymbol', '')
-            menu_list.append(
-                {'viewclass': 'OneLineListItem',
-                 'text': f'{ids} - {abbreviation} - {symbol}',
-                 'on_press': lambda x=f'{ids} - {symbol}': self.option_callback(x)}
+        if not self.menu:
+            menu_list = []
+            data = get_currencies()
+            for _, curr in data:
+                abbreviation = curr['currencyName']
+                ids = curr['id']
+                symbol = curr.get('currencySymbol', '')
+                menu_list.append(
+                    {'viewclass': 'OneLineListItem',
+                     'text': f'{ids} - {abbreviation} - {symbol}',
+                     'on_press': lambda x=f'{ids} - {symbol}': self.option_callback(x)}
+                )
+            self.menu = MDDropdownMenu(
+                width_mult=4,
+                caller=self.ids.drop_item_two,
+                items=menu_list
             )
-        self.menu = MDDropdownMenu(
-            width_mult=4,
-            caller=self.ids.drop_item_two,
-            items=menu_list
-        )
         self.menu.open()
 
     def option_callback(self, x):
@@ -87,13 +110,13 @@ class MyLayout(BoxLayout):
     def flip(self):
         if self.state == 0:
             self.state = 1
-            self.ids.toolbar.title = 'Convert from RSD to EUR'
+            self.ids.toolbar.title = 'From RSD to EUR'
             self.ids.upper_label.text = ''
             self.ids.bottom_label.text = ''
             self.ids.input.text = ''
         else:
             self.state = 0
-            self.ids.toolbar.title = 'Convert from EUR to RSD'
+            self.ids.toolbar.title = 'From EUR to RSD'
             self.ids.upper_label.text = ''
             self.ids.bottom_label.text = ''
             self.ids.input.text = ''
@@ -104,6 +127,7 @@ class MyLayout(BoxLayout):
                 customer_input = float(self.ids.input.text)
             except ValueError:
                 self.ids.upper_label.text = f'Please enter the valid amount'
+                self.ids.bottom_label.text = ''
                 return
             one_eur = exchange_rate('EUR', 'RSD')
             amount = round(customer_input * one_eur, 2)
@@ -115,6 +139,7 @@ class MyLayout(BoxLayout):
                 customer_input = float(self.ids.input.text)
             except ValueError:
                 self.ids.upper_label.text = f'Please enter the valid amount'
+                self.ids.bottom_label.text = ''
                 return
             one_din = exchange_rate('RSD', 'EUR')
             amount = round(customer_input * one_din)
