@@ -5,12 +5,12 @@ from kivy.config import Config
 Config.set("graphics", "width", "630")
 Config.set("graphics", "height", "950")
 
-from kivy.lang import Builder
 from kivymd.app import MDApp
-from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import NumericProperty, ObjectProperty
-from kivy.uix.recycleview import RecycleView
 from kivymd.uix.menu import MDDropdownMenu
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.recycleview import RecycleView
+from kivy.properties import NumericProperty, ObjectProperty
+from kivy.lang import Builder
 
 URL = "https://free.currconv.com/"
 API_KEY = 'bfc0324d084dd91c0e6f'
