@@ -9,7 +9,7 @@ from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.recycleview import RecycleView
-from kivy.properties import NumericProperty, ObjectProperty
+from kivy.properties import NumericProperty, ObjectProperty, ListProperty
 from kivy.lang import Builder
 
 URL = "https://free.currconv.com/"
@@ -58,45 +58,44 @@ class MyLayout(BoxLayout):
     state = NumericProperty(0)
     recycleView = ObjectProperty(None)
     menu = ObjectProperty()
+    menu_list = ListProperty()
 
     def open_menu_one(self):
-        if not self.menu:
-            menu_list = []
+        if not self.menu_list:
+            print('empty')
             data = get_currencies()
             for name, curr in data:
                 abbreviation = curr['currencyName']
                 ids = curr['id']
                 symbol = curr.get('currencySymbol', '')
-                menu_list.append(
+                self.menu_list.append(
                     {'viewclass': 'OneLineListItem',
                      'text': f'{ids} - {abbreviation} - {symbol}',
                      'on_press': lambda x=f'{ids} - {symbol}': self.option_callback(x)}
                 )
-            self.menu = MDDropdownMenu(
-                width_mult=4,
-                caller=self.ids.drop_item_one,
-                items=menu_list
-            )
+            self.menu = MDDropdownMenu(width_mult=4)
+
+        self.menu.caller = self.ids.drop_item_one
+        self.menu.items = self.menu_list
         self.menu.open()
 
     def open_menu_two(self):
-        if not self.menu:
-            menu_list = []
+        if not self.menu_list:
+            print('empty')
             data = get_currencies()
             for _, curr in data:
                 abbreviation = curr['currencyName']
                 ids = curr['id']
                 symbol = curr.get('currencySymbol', '')
-                menu_list.append(
+                self.menu_list.append(
                     {'viewclass': 'OneLineListItem',
                      'text': f'{ids} - {abbreviation} - {symbol}',
                      'on_press': lambda x=f'{ids} - {symbol}': self.option_callback(x)}
                 )
-            self.menu = MDDropdownMenu(
-                width_mult=4,
-                caller=self.ids.drop_item_two,
-                items=menu_list
-            )
+            self.menu = MDDropdownMenu(width_mult=4)
+
+        self.menu.caller = self.ids.drop_item_two
+        self.menu.items = self.menu_list
         self.menu.open()
 
     def option_callback(self, x):
