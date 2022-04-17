@@ -23,7 +23,7 @@ MyLayout:
                 halign: 'center'
                 size_hint: (0.33, 0.1)
                 pos_hint: {'center_x': 0.5, 'center_y': 0.65}
-                font_size: 22
+                font_size: 26
                 id: input
 
             MDLabel:
@@ -43,7 +43,7 @@ MyLayout:
 
             MDFillRoundFlatButton:
                 text: 'CONVERT'
-                font_size: 17
+                font_size: 25
                 pos_hint: {'center_x': 0.5, 'center_y': 0.15}
                 on_press: root.convert()
 
@@ -58,14 +58,16 @@ MyLayout:
                 id: drop_item_one
                 size: (.1,.1)
                 pos_hint: {'center_x': .3, 'center_y': .75}
-                on_release: root.open_menu_one()
+                on_press: root.open_menu_one()
+                on_release: amount_input.text = ''
 
             MDTextField:
+                on_focus: root.get_rate()
                 hint_text: 'Amount'
                 halign: 'center'
-                size_hint: (.1, .1)
+                size_hint: (.15, .1)
                 pos_hint: {'center_x': .3, 'center_y': 0.6}
-                font_size: 22
+                font_size: 26
                 id: amount_input
 
             MDLabel:
@@ -81,11 +83,13 @@ MyLayout:
                 text: 'To Currency'
                 id: drop_item_two
                 pos_hint: {'center_x': .7, 'center_y': .75}
-                on_release: root.open_menu_two()
+                on_press: root.open_menu_two()
+                on_release: amount_input.text = ''
+
 
             MDFillRoundFlatButton:
                 text: 'CALCULATE'
-                font_size: 17
+                font_size: 25
                 pos_hint: {'center_x': 0.3, 'center_y': 0.45}
                 on_press: root.buy_money()
 

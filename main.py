@@ -153,7 +153,6 @@ class MyLayout(BoxLayout):
             return
         try:
             amount = float(self.ids.amount_input.text)
-            self.get_exchange_rate(from_value, to_value)
             multiplier = self.rate
             result = round(multiplier * amount, 2)
             self.ids.result.text = f'For {amount} {from_value}\n you get {result} {to_value}'
@@ -164,6 +163,11 @@ class MyLayout(BoxLayout):
             print(e.args)
             result = 'Something went wrong. Try again'
             self.ids.result.text = result
+
+    def get_rate(self):
+        from_value = self.ids.drop_item_one.text[:3]
+        to_value = self.ids.drop_item_two.text[:3]
+        self.get_exchange_rate(from_value, to_value)
 
 
 class ConverterApp(MDApp):
