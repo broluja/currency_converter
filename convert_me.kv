@@ -59,6 +59,11 @@ MyLayout:
             name: 'screen 3'
             text: 'Buy Money'
             icon: 'cash'
+            on_tab_press:
+                result.text = ''
+                amount_input.text = ''
+                drop_item_one.text = 'From Currency'
+                drop_item_two.text = 'To Currency'
 
             MDRectangleFlatButton:
                 text: 'From Currency'
