@@ -10,6 +10,10 @@ MyLayout:
             name: 'screen 1'
             text: 'Convert Eur-Rsd'
             icon: 'cash-multiple'
+            on_tab_press:
+                root.set_currency_rate()
+                toolbar.title = 'From EUR to RSD'
+
 
             MDToolbar:
                 title: 'From EUR to RSD'

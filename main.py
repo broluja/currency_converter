@@ -40,6 +40,9 @@ class MyLayout(BoxLayout):
     def __init__(self, **kwargs):
         super(MyLayout, self).__init__(**kwargs)
         CurrencyManager().get_list_currencies(self.on_server_data, self.on_server_failure)
+        self.set_currency_rate()
+
+    def set_currency_rate(self):
         self.get_exchange_rate('EUR', 'RSD')
 
     def on_server_data(self, data):
